@@ -16,24 +16,59 @@ You don't have to do anything. That's the point.
 
 ## Install
 
-Two commands inside Claude Code:
+Three lines, typed **into Claude Code itself** — not a terminal:
 
 ```
 /plugin marketplace add Stiller-LnD-Lord/BigMind
 /plugin install bigmind@bigmind
-```
-
-Then, once:
-
-```
 /bigmind:mind-setup
 ```
 
-It asks what you'd like to call your memory — **Brain**, **Vault**, whatever —
-and that's it. Nothing else to configure.
+`mind-setup` asks what you'd like to call your memory — **Brain**, **Vault**,
+whatever. That's the only question. Nothing else to configure.
 
-**Requirements:** Claude Code with plugin support, and Node.js (already required
-by Claude Code). Works on Windows, macOS, and Linux.
+You'll see a **trust prompt** when adding the marketplace. That's expected —
+it's asking whether you trust this repository.
+
+**No restart needed.** Hooks load immediately in the session you're already in.
+
+**Requirements:** Claude Code (any surface — VS Code extension, CLI, or desktop
+app) and Node.js, which Claude Code already requires. Works on Windows, macOS,
+and Linux.
+
+---
+
+## Never used Claude Code before? Start here
+
+**1. Open your project *folder*, not a file.**
+
+In VS Code: **File → Open Folder** and pick the project you're working on.
+
+This matters more than it sounds. Claude Code stores memory **per working
+directory**. If you open a single file, or a different folder each time, you
+end up with several unrelated half-empty memories and BigMind will look like
+it isn't working. One project, one folder, every time.
+
+**2. Open Claude.**
+
+The Claude extension gives you a chat panel. That panel is where everything
+below gets typed.
+
+**3. Type the three lines from Install above.**
+
+Slash commands like `/plugin` are Claude Code's own commands. They go in the
+chat box where you'd normally type a message to Claude — **not** in a terminal.
+Press enter after each one, and accept the trust prompt when it appears.
+
+**4. Carry on working. That's it.**
+
+There is nothing to remember and nothing to run. BigMind captures at the end of
+each session and files it away at the start of the next one.
+
+**Expect it to feel like nothing is happening for the first few sessions.**
+Memory only starts earning its keep once there are a handful of entries — the
+payoff is at week three, not day one. This is the single most common reason
+people conclude it's broken when it isn't.
 
 ---
 
