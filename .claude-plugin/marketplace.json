@@ -1,0 +1,25 @@
+{
+  "name": "bigmind",
+  "description": "BigMind — automatic, growing long-term memory for Claude Code.",
+  "owner": {
+    "name": "Tom Stiller",
+    "email": "tom.stiller@movember.com",
+    "url": "https://github.com/Stiller-LnD-Lord/BigMind"
+  },
+  "metadata": {
+    "pluginRoot": "./plugins"
+  },
+  "plugins": [
+    {
+      "name": "bigmind",
+      "source": "./bigmind",
+      "description": "Captures the essence of each Claude Code session into a growing, human-editable memory wiki that loads automatically in future sessions.",
+      "version": "0.1.0",
+      "category": "productivity",
+      "tags": ["memory", "context", "automation", "knowledge-base"],
+      "author": {
+        "name": "Tom Stiller"
+      }
+    }
+  ]
+}

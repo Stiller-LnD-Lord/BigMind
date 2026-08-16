@@ -1,0 +1,30 @@
+{
+  "description": "BigMind: queue each finished session at exit, then distil the queue at the start of the next session.",
+  "hooks": {
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node",
+            "args": ["${CLAUDE_PLUGIN_ROOT}/scripts/session-end.mjs"],
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node",
+            "args": ["${CLAUDE_PLUGIN_ROOT}/scripts/session-start.mjs"],
+            "timeout": 15,
+            "statusMessage": "Checking BigMind queue..."
+          }
+        ]
+      }
+    ]
+  }
+}
