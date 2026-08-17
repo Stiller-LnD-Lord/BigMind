@@ -1,9 +1,9 @@
 ---
-description: Adopt an existing hand-built memory folder into BigMind, without changing it
+description: Adopt an existing hand-built memory folder into Noggin, without changing it
 ---
 
 The user already has memories — built by hand, or accumulated through Claude
-Code's built-in auto-memory — and wants BigMind to take over the automation
+Code's built-in auto-memory — and wants Noggin to take over the automation
 **without touching what's already there**. That guarantee is the whole point of
 this command. Be conservative; nothing here should surprise them.
 
@@ -17,7 +17,7 @@ node "${CLAUDE_PLUGIN_ROOT}/scripts/memory.mjs" --status
 
 Report plainly: how many memories, whether an index exists, and whether any use
 the older frontmatter style. If the folder is empty, tell them there is nothing
-to upgrade — plain `/bigmind:mind-setup` is all they need — and stop.
+to upgrade — plain `/noggin:mind-setup` is all they need — and stop.
 
 ## Step 2 — Back up
 
@@ -25,7 +25,7 @@ to upgrade — plain `/bigmind:mind-setup` is all they need — and stop.
 node "${CLAUDE_PLUGIN_ROOT}/scripts/memory.mjs" --backup
 ```
 
-Tell them the path. Do this even though BigMind also backs up automatically
+Tell them the path. Do this even though Noggin also backs up automatically
 before its first write — a backup they were told about is worth more than one
 they weren't.
 
@@ -35,7 +35,7 @@ they weren't.
 node "${CLAUDE_PLUGIN_ROOT}/scripts/memory.mjs" --adopt
 ```
 
-This records every current memory as **protected**: BigMind may read them but
+This records every current memory as **protected**: Noggin may read them but
 never edit or delete them. Only files it creates later are writable.
 
 Run this **before** the first capture. Running it afterwards would leave
@@ -61,13 +61,13 @@ untouched**.
 
 ## Step 6 — Name it and confirm
 
-Ask what they want to call their memory (see `/bigmind:mind-setup`), set it
+Ask what they want to call their memory (see `/noggin:mind-setup`), set it
 with `config.mjs --set mindName="..."`, then confirm in three lines:
 
 1. N existing memories are protected and will not be modified.
 2. New memories will be added alongside them automatically, from the next
    session onward.
-3. `/bigmind:mind status` shows the state; `/bigmind:mind review` audits it.
+3. `/noggin:mind status` shows the state; `/noggin:mind review` audits it.
 
-Mention that if they ever want BigMind to be able to merge into a particular
+Mention that if they ever want Noggin to be able to merge into a particular
 old memory, `memory.mjs --release <file.md>` hands over that one file.

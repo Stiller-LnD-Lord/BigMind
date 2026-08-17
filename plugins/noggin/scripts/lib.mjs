@@ -1,5 +1,5 @@
 /**
- * BigMind shared helpers.
+ * Noggin shared helpers.
  *
  * Everything here is dependency-free and cross-platform (Windows/macOS/Linux).
  * Hook scripts must never throw — a crashing hook is worse than a missed memory.
@@ -15,30 +15,53 @@ import {
   appendFileSync,
   readdirSync,
   copyFileSync,
+  renameSync,
 } from 'node:fs';
 
 export const CLAUDE_DIR = join(homedir(), '.claude');
-export const BIGMIND_DIR = join(CLAUDE_DIR, 'bigmind');
-export const CONFIG_PATH = join(BIGMIND_DIR, 'config.json');
-export const QUEUE_PATH = join(BIGMIND_DIR, 'pending.jsonl');
-export const SEEN_PATH = join(BIGMIND_DIR, 'seen.json');
-export const BACKUP_DIR = join(BIGMIND_DIR, 'backups');
-export const LOG_PATH = join(BIGMIND_DIR, 'bigmind.log');
+export const NOGGIN_DIR = join(CLAUDE_DIR, 'noggin');
+export const CONFIG_PATH = join(NOGGIN_DIR, 'config.json');
+export const QUEUE_PATH = join(NOGGIN_DIR, 'pending.jsonl');
+export const SEEN_PATH = join(NOGGIN_DIR, 'seen.json');
+export const BACKUP_DIR = join(NOGGIN_DIR, 'backups');
+export const LOG_PATH = join(NOGGIN_DIR, 'noggin.log');
 
-/** Defaults used until the user runs /bigmind:mind-setup. */
+/**
+ * This plugin was called BigMind until v0.2.0, and kept its state in
+ * ~/.claude/bigmind. Carry that folder over on first run so the config, the
+ * pending queue and — most importantly — the seen.json baselines that mark
+ * pre-existing memories as protected all survive the rename. Without this the
+ * baselines look empty and previously protected files become writable.
+ *
+ * Runs at import time, once per process, and must never throw: a migration
+ * that crashes a hook is worse than one that silently no-ops.
+ */
+(function migrateFromBigMind() {
+  try {
+    const legacy = join(CLAUDE_DIR, 'bigmind');
+    if (existsSync(NOGGIN_DIR) || !existsSync(legacy)) return;
+    renameSync(legacy, NOGGIN_DIR);
+    const legacyLog = join(NOGGIN_DIR, 'bigmind.log');
+    if (existsSync(legacyLog) && !existsSync(LOG_PATH)) renameSync(legacyLog, LOG_PATH);
+  } catch {
+    // Fall through to a fresh state directory rather than breaking the session.
+  }
+})();
+
+/** Defaults used until the user runs /noggin:mind-setup. */
 export const DEFAULT_CONFIG = {
   // What the user calls their memory. Purely cosmetic — it changes how Claude
   // refers to it in conversation, not where anything is stored on disk.
   mindName: 'Mind',
   // Master switch for automatic end-of-session capture.
   autoCapture: true,
-  // Protection for memories that predate BigMind.
-  //   'auto'  — protect any file that already existed when BigMind first saw
-  //             the project. BigMind may still edit files it created itself.
+  // Protection for memories that predate Noggin.
+  //   'auto'  — protect any file that already existed when Noggin first saw
+  //             the project. Noggin may still edit files it created itself.
   //   true    — never modify or delete ANY existing memory file.
-  //   false   — no protection; BigMind may merge into any file.
+  //   false   — no protection; Noggin may merge into any file.
   protectExisting: 'auto',
-  // Copy the memory directory into ~/.claude/bigmind/backups before the first
+  // Copy the memory directory into ~/.claude/noggin/backups before the first
   // distillation touches a project.
   backupBeforeFirstWrite: true,
   // Sessions with fewer real user turns than this are considered chit-chat
@@ -65,7 +88,7 @@ export function loadConfig() {
 }
 
 export function saveConfig(cfg) {
-  ensureDir(BIGMIND_DIR);
+  ensureDir(NOGGIN_DIR);
   writeFileSync(CONFIG_PATH, JSON.stringify(cfg, null, 2) + '\n', 'utf8');
 }
 
@@ -101,9 +124,9 @@ export function listMemoryFiles(cwd) {
 /* ------------------------------------------------------------------ *
  * Baseline tracking
  *
- * The first time BigMind sees a project we record which memory files were
- * already there. Those files predate BigMind and — under 'auto' protection —
- * are never modified or deleted by it. Files BigMind creates afterwards are
+ * The first time Noggin sees a project we record which memory files were
+ * already there. Those files predate Noggin and — under 'auto' protection —
+ * are never modified or deleted by it. Files Noggin creates afterwards are
  * fair game for merging, which is what keeps the knowledge base from filling
  * with near-duplicates.
  * ------------------------------------------------------------------ */
@@ -118,12 +141,12 @@ export function readSeen() {
 }
 
 export function writeSeen(obj) {
-  ensureDir(BIGMIND_DIR);
+  ensureDir(NOGGIN_DIR);
   writeFileSync(SEEN_PATH, JSON.stringify(obj, null, 2) + '\n', 'utf8');
 }
 
 /**
- * Record the pre-BigMind baseline for a project if we haven't already.
+ * Record the pre-Noggin baseline for a project if we haven't already.
  * Returns { baseline, firstEncounter }.
  */
 export function recordBaseline(cwd) {
@@ -141,7 +164,7 @@ export function recordBaseline(cwd) {
   return { baseline, firstEncounter: true };
 }
 
-/** Files BigMind must not modify or delete, given the config. */
+/** Files Noggin must not modify or delete, given the config. */
 export function protectedFiles(cfg, cwd) {
   if (cfg.protectExisting === false) return [];
   if (cfg.protectExisting === true) {
@@ -154,7 +177,7 @@ export function protectedFiles(cfg, cwd) {
 }
 
 /**
- * Copy a project's memory directory into the BigMind backup area.
+ * Copy a project's memory directory into the Noggin backup area.
  * Returns the backup path, or null if there was nothing to copy.
  */
 export function backupMemories(cwd, label = 'auto') {
@@ -208,20 +231,20 @@ export function readQueue() {
 }
 
 export function writeQueue(entries) {
-  ensureDir(BIGMIND_DIR);
+  ensureDir(NOGGIN_DIR);
   const body = entries.map((e) => JSON.stringify(e)).join('\n');
   writeFileSync(QUEUE_PATH, body ? body + '\n' : '', 'utf8');
 }
 
 export function appendQueue(entry) {
-  ensureDir(BIGMIND_DIR);
+  ensureDir(NOGGIN_DIR);
   appendFileSync(QUEUE_PATH, JSON.stringify(entry) + '\n', 'utf8');
 }
 
 /** Best-effort debug log; never throws. */
 export function log(message) {
   try {
-    ensureDir(BIGMIND_DIR);
+    ensureDir(NOGGIN_DIR);
     appendFileSync(LOG_PATH, `${new Date().toISOString()} ${message}\n`, 'utf8');
   } catch {
     /* ignore */

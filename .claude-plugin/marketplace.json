@@ -1,17 +1,17 @@
 {
-  "name": "bigmind",
-  "description": "BigMind — automatic, growing long-term memory for Claude Code.",
+  "name": "noggin",
+  "description": "Noggin — automatic, growing long-term memory for Claude Code.",
   "owner": {
     "name": "Tom Stiller",
     "email": "tom.stiller@movember.com",
-    "url": "https://github.com/Stiller-LnD-Lord/BigMind"
+    "url": "https://github.com/Stiller-LnD-Lord/Noggin"
   },
   "plugins": [
     {
-      "name": "bigmind",
-      "source": "./plugins/bigmind",
+      "name": "noggin",
+      "source": "./plugins/noggin",
       "description": "Captures the essence of each Claude Code session into a growing, human-editable memory wiki that loads automatically in future sessions.",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "category": "productivity",
       "tags": ["memory", "context", "automation", "knowledge-base"],
       "author": {

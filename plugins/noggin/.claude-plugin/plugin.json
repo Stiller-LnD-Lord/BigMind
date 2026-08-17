@@ -1,14 +1,14 @@
 {
-  "name": "bigmind",
-  "displayName": "BigMind",
-  "version": "0.1.0",
+  "name": "noggin",
+  "displayName": "Noggin",
+  "version": "0.2.0",
   "description": "Automatic long-term memory for Claude Code. Distils each session into a growing, human-editable wiki that future sessions load automatically.",
   "author": {
     "name": "Tom Stiller",
     "email": "tom.stiller@movember.com"
   },
-  "homepage": "https://github.com/Stiller-LnD-Lord/BigMind",
-  "repository": "https://github.com/Stiller-LnD-Lord/BigMind",
+  "homepage": "https://github.com/Stiller-LnD-Lord/Noggin",
+  "repository": "https://github.com/Stiller-LnD-Lord/Noggin",
   "license": "MIT",
   "keywords": ["memory", "context", "knowledge-base", "automation"],
   "hooks": "./hooks/hooks.json"

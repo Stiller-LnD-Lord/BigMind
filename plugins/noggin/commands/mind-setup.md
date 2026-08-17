@@ -1,8 +1,8 @@
 ---
-description: Set up BigMind and choose what you want to call your memory
+description: Set up Noggin and choose what you want to call your memory
 ---
 
-Set up BigMind for this user. Keep it to two exchanges at most — this should
+Set up Noggin for this user. Keep it to two exchanges at most — this should
 feel like a thirty-second job.
 
 **Step 1 — Ask what they want to call it.**
@@ -28,7 +28,7 @@ config took effect, then tell them:
 2. **Their memory lives in** `~/.claude/projects/<encoded-cwd>/memory/` as plain
    markdown — greppable, editable in any editor, deletable. Most people never
    touch it.
-3. **`/bigmind:mind status`** shows what's stored, **`/bigmind:mind review`**
+3. **`/noggin:mind status`** shows what's stored, **`/noggin:mind review`**
    tidies it up.
 
 Finally, mention that it will feel like nothing is happening for the first few

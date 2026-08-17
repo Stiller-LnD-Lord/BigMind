@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Queue management for BigMind.
+ * Queue management for Noggin.
  *
  * Usage:
  *   node queue.mjs --list                     show pending sessions

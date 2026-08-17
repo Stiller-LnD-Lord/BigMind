@@ -1,5 +1,5 @@
 {
-  "description": "BigMind: queue each finished session at exit, then distil the queue at the start of the next session.",
+  "description": "Noggin: queue each finished session at exit, then distil the queue at the start of the next session.",
   "hooks": {
     "SessionEnd": [
       {
@@ -19,7 +19,7 @@
             "type": "command",
             "command": "node \"${CLAUDE_PLUGIN_ROOT}/scripts/session-start.mjs\"",
             "timeout": 15,
-            "statusMessage": "Checking BigMind queue..."
+            "statusMessage": "Checking Noggin queue..."
           }
         ]
       }

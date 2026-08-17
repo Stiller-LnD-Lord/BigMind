@@ -1,18 +1,18 @@
 ---
-name: bigmind
-description: Distil finished Claude Code sessions into durable long-term memory, and maintain that memory over time. Use when the injected <bigmind-pending> context reports sessions waiting to be distilled, when the user asks to save/remember something for future sessions, or when they ask to review, prune, or search their memory (which they may call their Mind, Brain, or whatever name they configured).
+name: noggin
+description: Distil finished Claude Code sessions into durable long-term memory, and maintain that memory over time. Use when the injected <noggin-pending> context reports sessions waiting to be distilled, when the user asks to save/remember something for future sessions, or when they ask to review, prune, or search their memory (which they may call their Mind, Brain, or whatever name they configured).
 ---
 
-# BigMind
+# Noggin
 
-BigMind turns finished sessions into a small, high-signal knowledge base that
+Noggin turns finished sessions into a small, high-signal knowledge base that
 loads automatically in every future session. The goal is that six months from
 now, Claude already knows the project's conventions, constraints, and gotchas
 without the user re-explaining them.
 
 ## Where memories live
 
-BigMind writes into Claude Code's **native auto-memory directory**:
+Noggin writes into Claude Code's **native auto-memory directory**:
 
 ```
 ~/.claude/projects/<encoded-cwd>/memory/
@@ -26,9 +26,9 @@ BigMind writes into Claude Code's **native auto-memory directory**:
 `<encoded-cwd>` is the absolute working directory with every non-alphanumeric
 character replaced by a hyphen (`C:\Users\Tom` → `C--Users-Tom`).
 
-This matters: BigMind deliberately does **not** invent its own storage. By
+This matters: Noggin deliberately does **not** invent its own storage. By
 using the native location, memories are picked up by Claude Code's built-in
-loader with no extra configuration. BigMind supplies the automation and the
+loader with no extra configuration. Noggin supplies the automation and the
 editorial standard, not a parallel filesystem.
 
 Only `MEMORY.md` is loaded up front. Individual memory files are read on demand
@@ -37,13 +37,13 @@ descriptive, and the whole thing must stay small.
 
 ## What the user calls it
 
-Read `~/.claude/bigmind/config.json` for `mindName` and use that word when
+Read `~/.claude/noggin/config.json` for `mindName` and use that word when
 talking to the user ("saved to your Brain", "already in your Vault"). It is a
 label only — it never changes paths or filenames. Default is "Mind".
 
 ## Distillation procedure
 
-Run this when `<bigmind-pending>` context appears, or on `/bigmind:mind capture`.
+Run this when `<noggin-pending>` context appears, or on `/noggin:mind capture`.
 
 **1. Build a digest.** Never read a raw transcript — they reach tens of
 megabytes. Run:
@@ -108,15 +108,15 @@ process. If nothing was worth keeping, say so in one short clause.
 
 ## Protected memories
 
-Many people arrive at BigMind with a memory folder they have curated by hand
+Many people arrive at Noggin with a memory folder they have curated by hand
 for months. Those files are the most valuable thing in the system and the
 easiest thing to quietly ruin — not by deleting them, but by "merging" a new
 observation in and smoothing away the specific detail that made the rule
 useful. The owner would not notice for weeks.
 
-So BigMind records a **baseline**: the list of memory files that existed the
+So Noggin records a **baseline**: the list of memory files that existed the
 first time it saw a project. Under the default `protectExisting: 'auto'`, those
-files are read-only to BigMind forever. Files BigMind creates itself stay
+files are read-only to Noggin forever. Files Noggin creates itself stay
 writable, which is what keeps duplicates under control going forward.
 
 Check the state at any time:
@@ -134,7 +134,7 @@ node "<plugin-root>/scripts/memory.mjs" --status
 - In `MEMORY.md`, **append** index lines for files you create. Do not reword,
   reorder, or remove existing lines.
 - If a protected memory is genuinely **wrong**, do not fix it silently. Say so
-  to the user and let them decide — that is what `/bigmind:mind review` is for.
+  to the user and let them decide — that is what `/noggin:mind review` is for.
 
 The user can hand a specific file over with
 `memory.mjs --release <file.md>`, or drop protection entirely with
@@ -153,7 +153,7 @@ future session that reads it.
 
 ## Maintenance
 
-On `/bigmind:mind review`, audit the memory directory and report:
+On `/noggin:mind review`, audit the memory directory and report:
 - **Stale** — claims about files, versions, or state that no longer hold. Verify against the current repo before flagging; memories are point-in-time snapshots.
 - **Duplicates** — two files covering one fact; merge them.
 - **Vague** — no actionable rule, or missing the Why. Rewrite or delete.

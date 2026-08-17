@@ -5,7 +5,7 @@
  * Usage:
  *   node memory.mjs --status [--cwd <path>]     what's there, what's protected
  *   node memory.mjs --backup [--cwd <path>]     snapshot the memory directory
- *   node memory.mjs --adopt  [--cwd <path>]     record the pre-BigMind baseline now
+ *   node memory.mjs --adopt  [--cwd <path>]     record the pre-Noggin baseline now
  *   node memory.mjs --release <file.md>         stop protecting one file
  */
 
@@ -82,7 +82,7 @@ if (argv.includes('--release')) {
   console.log(
     before === seen[key].baseline.length
       ? `"${file}" was not protected.`
-      : `Released "${file}". BigMind may now merge into it. ${seen[key].baseline.length} still protected.`,
+      : `Released "${file}". Noggin may now merge into it. ${seen[key].baseline.length} still protected.`,
   );
   process.exit(0);
 }
@@ -117,7 +117,7 @@ if (memories.length) {
     console.log(
       `\nNote: ${styles.legacy.length + styles.partial.length + styles.none.length} file(s) ` +
         'use an older or missing frontmatter style. They still work — Claude reads the body ' +
-        'either way — but /bigmind:mind-upgrade can normalise them.',
+        'either way — but /noggin:mind-upgrade can normalise them.',
     );
   }
 }

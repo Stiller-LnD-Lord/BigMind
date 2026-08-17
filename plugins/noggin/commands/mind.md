@@ -1,12 +1,12 @@
 ---
-description: Inspect, capture into, or tidy your BigMind long-term memory
+description: Inspect, capture into, or tidy your Noggin long-term memory
 argument-hint: "[status | capture | review | search <term>]"
 ---
 
-Use the `bigmind` skill to handle this request.
+Use the `noggin` skill to handle this request.
 
 The plugin's scripts are at `${CLAUDE_PLUGIN_ROOT}/scripts/`.
-User config is at `~/.claude/bigmind/config.json` — read `mindName` and use
+User config is at `~/.claude/noggin/config.json` — read `mindName` and use
 that word when talking to the user about their memory.
 
 Subcommand requested: **$ARGUMENTS** (default to `status` if empty)

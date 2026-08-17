@@ -1,11 +1,11 @@
-# BigMind
+# Noggin
 
 **Automatic long-term memory for Claude Code.**
 
 Every Claude Code session starts from zero. You re-explain the same conventions,
 the same constraints, the same "no, we don't do it that way here" — every time.
 
-BigMind fixes that. When a session ends, it gets queued. At the start of your
+Noggin fixes that. When a session ends, it gets queued. At the start of your
 next session, Claude quietly distils the previous one into a small, permanent
 knowledge base — then loads it automatically forever after. After a few weeks,
 Claude already knows how your team works.
@@ -19,8 +19,8 @@ You don't have to do anything. That's the point.
 **Step 1 — in a terminal** (VS Code: **Terminal → New Terminal**):
 
 ```bash
-claude plugin marketplace add Stiller-LnD-Lord/BigMind
-claude plugin install bigmind@bigmind
+claude plugin marketplace add Stiller-LnD-Lord/Noggin
+claude plugin install noggin@noggin
 ```
 
 > **Why a terminal?** `/plugin` is a CLI-only command. In the VS Code
@@ -31,8 +31,8 @@ claude plugin install bigmind@bigmind
 **Step 2 — in Claude**, type one of:
 
 ```
-/bigmind:mind-upgrade     # if you already have memories — protects them
-/bigmind:mind-setup       # if you're starting fresh
+/noggin:mind-upgrade     # if you already have memories — protects them
+/noggin:mind-setup       # if you're starting fresh
 ```
 
 These *are* available in the VS Code extension — only `/plugin` isn't.
@@ -65,18 +65,18 @@ should be working from there anyway — see the directory note below.
 
 If you've been using Claude Code's built-in memory — or curating a memory
 folder by hand — **your existing memories are the most valuable thing here and
-BigMind will not touch them.**
+Noggin will not touch them.**
 
 Install as above, then run this instead of `mind-setup`:
 
 ```
-/bigmind:mind-upgrade
+/noggin:mind-upgrade
 ```
 
 It surveys what you have, backs it up, and **freezes it**: every memory that
-existed before BigMind arrived becomes permanently read-only to it. BigMind
+existed before Noggin arrived becomes permanently read-only to it. Noggin
 reads them (so it doesn't write duplicates) but can never edit, reword, merge
-into, or delete them. Only memories BigMind creates itself stay writable.
+into, or delete them. Only memories Noggin creates itself stay writable.
 
 This matters more than it sounds. The realistic failure mode for an automated
 memory system isn't deleting your work — it's quietly "merging" a new
@@ -87,10 +87,10 @@ that failure mode entirely.
 Check the state any time:
 
 ```
-/bigmind:mind status
+/noggin:mind status
 ```
 
-Protected files are listed as `[protected]`. If you later decide BigMind
+Protected files are listed as `[protected]`. If you later decide Noggin
 *should* be able to update one of them, hand over that single file:
 
 ```
@@ -112,7 +112,7 @@ In VS Code: **File → Open Folder** and pick the project you're working on.
 
 This matters more than it sounds. Claude Code stores memory **per working
 directory**. If you open a single file, or a different folder each time, you
-end up with several unrelated half-empty memories and BigMind will look like
+end up with several unrelated half-empty memories and Noggin will look like
 it isn't working. One project, one folder, every time.
 
 **2. Open Claude.**
@@ -122,11 +122,11 @@ below gets typed.
 
 **3. Run the two install commands in a terminal**, then the setup command in
 Claude — see [Install](#install) above. The split matters: `claude plugin …`
-goes in a terminal, `/bigmind:…` goes in the Claude chat panel.
+goes in a terminal, `/noggin:…` goes in the Claude chat panel.
 
 **4. Restart Claude, then carry on working. That's it.**
 
-There is nothing to remember and nothing to run. BigMind captures at the end of
+There is nothing to remember and nothing to run. Noggin captures at the end of
 each session and files it away at the start of the next one.
 
 **Expect it to feel like nothing is happening for the first few sessions.**
@@ -154,7 +154,7 @@ starts                              │
 
 **Why not distil at session end?** `SessionEnd` hooks share a ~1.5 second
 budget (raised to at most 60s). That is nowhere near enough to read a transcript
-and think about it, and anything slow there delays your shell prompt. So BigMind
+and think about it, and anything slow there delays your shell prompt. So Noggin
 does the near-free part at exit — appending one line to a queue — and the
 thinking at the start of the next session, where there's no clock and a full
 model with tool access. If a distillation is ever missed, the entry stays queued
@@ -166,9 +166,9 @@ bounded digest — user turns, Claude's conclusions, files touched, commands run
 dropping thinking blocks and tool results. A 33MB transcript becomes an 8KB
 digest in about half a second, so distillation costs very little.
 
-**It uses Claude Code's own memory directory.** BigMind does not invent a
+**It uses Claude Code's own memory directory.** Noggin does not invent a
 parallel store. It writes to `~/.claude/projects/<encoded-cwd>/memory/`, which
-Claude Code already loads on its own. BigMind supplies the automation and the
+Claude Code already loads on its own. Noggin supplies the automation and the
 editorial standard; the loading is native.
 
 ---
@@ -192,7 +192,7 @@ already know this?** If yes, it isn't saved.
 Each memory is one fact in one markdown file, and `feedback`/`project` entries
 must carry a **Why** and a **How to apply** — a rule without its reasoning gets
 misapplied later. See
-[memory-format.md](plugins/bigmind/skills/bigmind/reference/memory-format.md)
+[memory-format.md](plugins/noggin/skills/noggin/reference/memory-format.md)
 for the full standard and worked good/bad examples.
 
 Most sessions produce **zero or one** memory. That's correct, not a failure.
@@ -203,26 +203,26 @@ Most sessions produce **zero or one** memory. That's correct, not a failure.
 
 | Command | Does |
 |---------|------|
-| `/bigmind:mind-setup` | First-run setup; choose your memory's name |
-| `/bigmind:mind-upgrade` | Adopt an existing memory folder and freeze it as read-only |
-| `/bigmind:mind status` | What's stored, what's queued, is capture on |
-| `/bigmind:mind capture` | Distil now instead of waiting for the next session |
-| `/bigmind:mind review` | Audit for stale, duplicate, or vague memories |
-| `/bigmind:mind search <term>` | Search your memories |
-| `/bigmind:mind <a fact>` | Remember something specific, right now |
+| `/noggin:mind-setup` | First-run setup; choose your memory's name |
+| `/noggin:mind-upgrade` | Adopt an existing memory folder and freeze it as read-only |
+| `/noggin:mind status` | What's stored, what's queued, is capture on |
+| `/noggin:mind capture` | Distil now instead of waiting for the next session |
+| `/noggin:mind review` | Audit for stale, duplicate, or vague memories |
+| `/noggin:mind search <term>` | Search your memories |
+| `/noggin:mind <a fact>` | Remember something specific, right now |
 
 ---
 
 ## Configuration
 
-`~/.claude/bigmind/config.json`:
+`~/.claude/noggin/config.json`:
 
 | Key | Default | Meaning |
 |-----|---------|---------|
 | `mindName` | `"Mind"` | What Claude calls it in conversation. Cosmetic only — no paths change. |
 | `autoCapture` | `true` | Master switch for automatic capture |
-| `protectExisting` | `"auto"` | `"auto"` protects memories that predate BigMind; `true` protects every existing file; `false` disables protection |
-| `backupBeforeFirstWrite` | `true` | Snapshot a project's memory folder before BigMind's first write to it |
+| `protectExisting` | `"auto"` | `"auto"` protects memories that predate Noggin; `true` protects every existing file; `false` disables protection |
+| `backupBeforeFirstWrite` | `true` | Snapshot a project's memory folder before Noggin's first write to it |
 | `minUserTurns` | `3` | Sessions shorter than this are treated as chit-chat |
 | `maxQueue` | `25` | Backlog cap; oldest entries drop past this |
 | `excludeProjects` | `[]` | Absolute paths to never capture from |
@@ -233,7 +233,7 @@ node <plugin-root>/scripts/config.mjs --set mindName="Brain"
 node <plugin-root>/scripts/config.mjs --set autoCapture=false
 ```
 
-Or just ask Claude — "turn off BigMind for this project" works.
+Or just ask Claude — "turn off Noggin for this project" works.
 
 ---
 
@@ -243,12 +243,12 @@ Everything is plain markdown on your own machine. Nothing is uploaded anywhere,
 and there is no server, database, or telemetry. Read it, edit it in any editor,
 grep it, delete it, or commit it to a private repo to share across machines.
 
-BigMind is instructed never to write secrets, tokens, credentials, or personal
+Noggin is instructed never to write secrets, tokens, credentials, or personal
 data about third parties into a memory file. Memory files are ordinary text —
 if you work under a policy about where project information may be stored, apply
 the same judgement here as you would to notes in a local file.
 
-**Uninstall:** `/plugin uninstall bigmind@bigmind`. Your memories are not
+**Uninstall:** `/plugin uninstall noggin@noggin`. Your memories are not
 deleted — they're in Claude Code's native memory directory and keep working.
 
 ---
@@ -256,13 +256,13 @@ deleted — they're in Claude Code's native memory directory and keep working.
 ## Repo layout
 
 ```
-BigMind/
+Noggin/
 ├── .claude-plugin/marketplace.json     the marketplace catalogue
-└── plugins/bigmind/
+└── plugins/noggin/
     ├── .claude-plugin/plugin.json      plugin manifest
     ├── hooks/hooks.json                SessionEnd + SessionStart wiring
     ├── commands/                       /mind, /mind-setup
-    ├── skills/bigmind/                 the distillation procedure + format standard
+    ├── skills/noggin/                 the distillation procedure + format standard
     └── scripts/                        lib, session-end, session-start, extract, queue, config
 ```
 
@@ -274,14 +274,14 @@ broken hook must never block a session.
 ## Troubleshooting
 
 **Nothing is being saved.** Give it a few sessions; short ones are skipped by
-design (`minUserTurns`). Check `/bigmind:mind status` and the log at
-`~/.claude/bigmind/bigmind.log`.
+design (`minUserTurns`). Check `/noggin:mind status` and the log at
+`~/.claude/noggin/noggin.log`.
 
 **Hooks aren't firing.** Confirm the plugin is enabled with `/plugin`, and check
 `node --version` resolves in your shell. Run `claude --debug` to see hook
 execution.
 
-**Too much is being saved.** Run `/bigmind:mind review` and prune. If it keeps
+**Too much is being saved.** Run `/noggin:mind review` and prune. If it keeps
 over-collecting, the bar in `SKILL.md` is the thing to tighten.
 
 ---

@@ -3,7 +3,7 @@
  * SessionStart hook — runs when a session begins or resumes.
  *
  * Two jobs:
- *   1. Record the pre-BigMind baseline for this project, so memories that
+ *   1. Record the pre-Noggin baseline for this project, so memories that
  *      predate the plugin can be protected from it.
  *   2. If previous sessions are sitting unprocessed in the queue, print an
  *      instruction to stdout. SessionStart is one of the few events where
@@ -32,7 +32,7 @@ async function main() {
   const cwd = input.cwd || process.cwd();
 
   // Always run, even with auto-capture off — the baseline must reflect the
-  // state of the folder BEFORE BigMind ever writes to it. Recording it late
+  // state of the folder BEFORE Noggin ever writes to it. Recording it late
   // would quietly leave newer memories unprotected.
   const { baseline, firstEncounter } = recordBaseline(cwd);
   if (firstEncounter && baseline.length) {
@@ -58,16 +58,16 @@ async function main() {
   const target = memoryDir(cwd);
   const protectedList = protectedFiles(cfg, cwd);
 
-  // One-time safety net before BigMind first writes into an established folder.
+  // One-time safety net before Noggin first writes into an established folder.
   if (cfg.backupBeforeFirstWrite && firstEncounter && baseline.length) {
-    const path = backupMemories(cwd, 'pre-bigmind');
+    const path = backupMemories(cwd, 'pre-noggin');
     if (path) log(`pre-write backup: ${path}`);
   }
 
   const lines = [];
-  lines.push('<bigmind-pending>');
+  lines.push('<noggin-pending>');
   lines.push(
-    `BigMind: ${pending.length} finished session${pending.length === 1 ? '' : 's'} ` +
+    `Noggin: ${pending.length} finished session${pending.length === 1 ? '' : 's'} ` +
       `${pending.length === 1 ? 'is' : 'are'} waiting to be distilled into the user's ${mind}.`,
   );
   lines.push('');
@@ -82,7 +82,7 @@ async function main() {
 
   if (protectedList.length) {
     lines.push(
-      `PROTECTED FILES (${protectedList.length}) — these predate BigMind and are ` +
+      `PROTECTED FILES (${protectedList.length}) — these predate Noggin and are ` +
         'READ-ONLY. You may read them for context and you MUST read them to avoid ' +
         'writing duplicates, but you may NOT edit, rewrite, reword, merge into, or ' +
         'delete any of them. If a new fact belongs with one of these, create a NEW ' +
@@ -98,14 +98,14 @@ async function main() {
   }
 
   lines.push(
-    'ACTION: Invoke the `bigmind` skill and follow its distillation procedure. ' +
+    'ACTION: Invoke the `noggin` skill and follow its distillation procedure. ' +
       'Do this in the BACKGROUND via a subagent so it does not delay the user — ' +
       'spawn one general-purpose agent with run_in_background, then immediately ' +
       'carry on with whatever the user actually asked for. Do not narrate the ' +
       'distillation beyond a single short line. If the user gave no instruction ' +
       'yet, just do it and report a one-line summary of what was learned.',
   );
-  lines.push('</bigmind-pending>');
+  lines.push('</noggin-pending>');
 
   process.stdout.write(lines.join('\n') + '\n');
   log(

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Read or update BigMind config.
+ * Read or update Noggin config.
  *
  * Usage:
  *   node config.mjs --show
