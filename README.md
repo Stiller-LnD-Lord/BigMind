@@ -16,25 +16,48 @@ You don't have to do anything. That's the point.
 
 ## Install
 
-Three lines, typed **into Claude Code itself** — not a terminal:
+**Step 1 — in a terminal** (VS Code: **Terminal → New Terminal**):
+
+```bash
+claude plugin marketplace add Stiller-LnD-Lord/BigMind
+claude plugin install bigmind@bigmind
+```
+
+> **Why a terminal?** `/plugin` is a CLI-only command. In the VS Code
+> extension it returns *"/plugin isn't available in this environment"*. The
+> `claude plugin …` commands above do exactly the same thing and work
+> everywhere.
+
+**Step 2 — in Claude**, type one of:
 
 ```
-/plugin marketplace add Stiller-LnD-Lord/BigMind
-/plugin install bigmind@bigmind
-/bigmind:mind-setup
+/bigmind:mind-upgrade     # if you already have memories — protects them
+/bigmind:mind-setup       # if you're starting fresh
 ```
+
+These *are* available in the VS Code extension — only `/plugin` isn't.
 
 `mind-setup` asks what you'd like to call your memory — **Brain**, **Vault**,
-whatever. That's the only question. Nothing else to configure.
+whatever. That's the only question.
 
-You'll see a **trust prompt** when adding the marketplace. That's expected —
-it's asking whether you trust this repository.
+**Restart Claude afterwards** so the new hooks are registered for your session.
 
-**No restart needed.** Hooks load immediately in the session you're already in.
+**Requirements:** Claude Code (VS Code extension, CLI, or desktop app) and
+Node.js, which Claude Code already requires. Works on Windows, macOS, and Linux.
 
-**Requirements:** Claude Code (any surface — VS Code extension, CLI, or desktop
-app) and Node.js, which Claude Code already requires. Works on Windows, macOS,
-and Linux.
+<details>
+<summary><b>If you see "Command 'git' not found or is in an unsafe location"</b></summary>
+
+Claude Code refuses to run a `git` located **underneath your current working
+directory**, since a repository could otherwise ship a malicious one.
+
+It bites when your terminal sits in your home folder *and* git is installed
+under your user profile (common on Windows: `%LOCALAPPDATA%\Programs\Git`).
+Your home folder is then an ancestor of the git install, and the check fires.
+
+**Fix:** `cd` into your actual project folder and run the install again. You
+should be working from there anyway — see the directory note below.
+</details>
 
 ---
 
@@ -97,13 +120,11 @@ it isn't working. One project, one folder, every time.
 The Claude extension gives you a chat panel. That panel is where everything
 below gets typed.
 
-**3. Type the three lines from Install above.**
+**3. Run the two install commands in a terminal**, then the setup command in
+Claude — see [Install](#install) above. The split matters: `claude plugin …`
+goes in a terminal, `/bigmind:…` goes in the Claude chat panel.
 
-Slash commands like `/plugin` are Claude Code's own commands. They go in the
-chat box where you'd normally type a message to Claude — **not** in a terminal.
-Press enter after each one, and accept the trust prompt when it appears.
-
-**4. Carry on working. That's it.**
+**4. Restart Claude, then carry on working. That's it.**
 
 There is nothing to remember and nothing to run. BigMind captures at the end of
 each session and files it away at the start of the next one.
