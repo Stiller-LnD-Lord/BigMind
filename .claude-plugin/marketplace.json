@@ -11,7 +11,7 @@
       "name": "noggin",
       "source": "./plugins/noggin",
       "description": "Captures the essence of each Claude Code session into a growing, human-editable memory wiki that loads automatically in future sessions.",
-      "version": "0.2.0",
+      "version": "0.2.1",
       "category": "productivity",
       "tags": ["memory", "context", "automation", "knowledge-base"],
       "author": {
