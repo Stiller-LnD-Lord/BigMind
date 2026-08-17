@@ -1,3 +1,8 @@
+<p align="center">
+  <img src=".github/assets/noggin-happy.gif" width="300"
+       alt="Noggin, a green brain character in a black beanie, bouncing and waving">
+</p>
+
 # Noggin
 
 **Automatic long-term memory for Claude Code.**
