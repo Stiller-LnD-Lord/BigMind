@@ -7,12 +7,22 @@
 
 import { homedir } from 'node:os';
 import { join, dirname } from 'node:path';
-import { existsSync, mkdirSync, readFileSync, writeFileSync, appendFileSync } from 'node:fs';
+import {
+  existsSync,
+  mkdirSync,
+  readFileSync,
+  writeFileSync,
+  appendFileSync,
+  readdirSync,
+  copyFileSync,
+} from 'node:fs';
 
 export const CLAUDE_DIR = join(homedir(), '.claude');
 export const BIGMIND_DIR = join(CLAUDE_DIR, 'bigmind');
 export const CONFIG_PATH = join(BIGMIND_DIR, 'config.json');
 export const QUEUE_PATH = join(BIGMIND_DIR, 'pending.jsonl');
+export const SEEN_PATH = join(BIGMIND_DIR, 'seen.json');
+export const BACKUP_DIR = join(BIGMIND_DIR, 'backups');
 export const LOG_PATH = join(BIGMIND_DIR, 'bigmind.log');
 
 /** Defaults used until the user runs /bigmind:mind-setup. */
@@ -22,6 +32,15 @@ export const DEFAULT_CONFIG = {
   mindName: 'Mind',
   // Master switch for automatic end-of-session capture.
   autoCapture: true,
+  // Protection for memories that predate BigMind.
+  //   'auto'  — protect any file that already existed when BigMind first saw
+  //             the project. BigMind may still edit files it created itself.
+  //   true    — never modify or delete ANY existing memory file.
+  //   false   — no protection; BigMind may merge into any file.
+  protectExisting: 'auto',
+  // Copy the memory directory into ~/.claude/bigmind/backups before the first
+  // distillation touches a project.
+  backupBeforeFirstWrite: true,
   // Sessions with fewer real user turns than this are considered chit-chat
   // and are dropped rather than distilled.
   minUserTurns: 3,
@@ -67,6 +86,95 @@ export function memoryDir(cwd) {
 export function memoryIndexPath(cwd) {
   return join(memoryDir(cwd), 'MEMORY.md');
 }
+
+/** Markdown files currently in a project's memory directory. */
+export function listMemoryFiles(cwd) {
+  try {
+    const dir = memoryDir(cwd);
+    if (!existsSync(dir)) return [];
+    return readdirSync(dir).filter((f) => f.toLowerCase().endsWith('.md')).sort();
+  } catch {
+    return [];
+  }
+}
+
+/* ------------------------------------------------------------------ *
+ * Baseline tracking
+ *
+ * The first time BigMind sees a project we record which memory files were
+ * already there. Those files predate BigMind and — under 'auto' protection —
+ * are never modified or deleted by it. Files BigMind creates afterwards are
+ * fair game for merging, which is what keeps the knowledge base from filling
+ * with near-duplicates.
+ * ------------------------------------------------------------------ */
+
+export function readSeen() {
+  try {
+    if (!existsSync(SEEN_PATH)) return {};
+    return JSON.parse(readFileSync(SEEN_PATH, 'utf8'));
+  } catch {
+    return {};
+  }
+}
+
+export function writeSeen(obj) {
+  ensureDir(BIGMIND_DIR);
+  writeFileSync(SEEN_PATH, JSON.stringify(obj, null, 2) + '\n', 'utf8');
+}
+
+/**
+ * Record the pre-BigMind baseline for a project if we haven't already.
+ * Returns { baseline, firstEncounter }.
+ */
+export function recordBaseline(cwd) {
+  const key = encodeProjectDir(cwd);
+  const seen = readSeen();
+  if (seen[key]) return { baseline: seen[key].baseline || [], firstEncounter: false };
+
+  const baseline = listMemoryFiles(cwd).filter((f) => f !== 'MEMORY.md');
+  seen[key] = {
+    cwd,
+    firstSeen: new Date().toISOString(),
+    baseline,
+  };
+  writeSeen(seen);
+  return { baseline, firstEncounter: true };
+}
+
+/** Files BigMind must not modify or delete, given the config. */
+export function protectedFiles(cfg, cwd) {
+  if (cfg.protectExisting === false) return [];
+  if (cfg.protectExisting === true) {
+    return listMemoryFiles(cwd).filter((f) => f !== 'MEMORY.md');
+  }
+  // 'auto'
+  const key = encodeProjectDir(cwd);
+  const seen = readSeen();
+  return (seen[key] && seen[key].baseline) || [];
+}
+
+/**
+ * Copy a project's memory directory into the BigMind backup area.
+ * Returns the backup path, or null if there was nothing to copy.
+ */
+export function backupMemories(cwd, label = 'auto') {
+  try {
+    const files = listMemoryFiles(cwd);
+    if (!files.length) return null;
+
+    const stamp = new Date().toISOString().replace(/[:.]/g, '-');
+    const dest = join(BACKUP_DIR, `${encodeProjectDir(cwd)}__${label}__${stamp}`);
+    ensureDir(dest);
+    const src = memoryDir(cwd);
+    for (const f of files) copyFileSync(join(src, f), join(dest, f));
+    return dest;
+  } catch (err) {
+    log(`backup failed for ${cwd}: ${err && err.message}`);
+    return null;
+  }
+}
+
+/* ------------------------------------------------------------------ */
 
 /** Read the JSON payload Claude Code sends on stdin. Returns {} on anything odd. */
 export async function readHookInput() {

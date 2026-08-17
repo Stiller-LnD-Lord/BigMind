@@ -38,6 +38,49 @@ and Linux.
 
 ---
 
+## Already have memories? Upgrade instead
+
+If you've been using Claude Code's built-in memory — or curating a memory
+folder by hand — **your existing memories are the most valuable thing here and
+BigMind will not touch them.**
+
+Install as above, then run this instead of `mind-setup`:
+
+```
+/bigmind:mind-upgrade
+```
+
+It surveys what you have, backs it up, and **freezes it**: every memory that
+existed before BigMind arrived becomes permanently read-only to it. BigMind
+reads them (so it doesn't write duplicates) but can never edit, reword, merge
+into, or delete them. Only memories BigMind creates itself stay writable.
+
+This matters more than it sounds. The realistic failure mode for an automated
+memory system isn't deleting your work — it's quietly "merging" a new
+observation into a carefully worded rule and smoothing away the detail that
+made it useful. You wouldn't notice for weeks. Freezing the baseline removes
+that failure mode entirely.
+
+Check the state any time:
+
+```
+/bigmind:mind status
+```
+
+Protected files are listed as `[protected]`. If you later decide BigMind
+*should* be able to update one of them, hand over that single file:
+
+```
+node <plugin-root>/scripts/memory.mjs --release feedback_my_rule.md
+```
+
+**Older frontmatter is fine.** Memories written under earlier conventions
+(`type:` at the top level rather than nested under `metadata:`) work exactly as
+they always did. `mind-upgrade` will offer to normalise them, but it's cosmetic
+and entirely optional.
+
+---
+
 ## Never used Claude Code before? Start here
 
 **1. Open your project *folder*, not a file.**
@@ -140,6 +183,7 @@ Most sessions produce **zero or one** memory. That's correct, not a failure.
 | Command | Does |
 |---------|------|
 | `/bigmind:mind-setup` | First-run setup; choose your memory's name |
+| `/bigmind:mind-upgrade` | Adopt an existing memory folder and freeze it as read-only |
 | `/bigmind:mind status` | What's stored, what's queued, is capture on |
 | `/bigmind:mind capture` | Distil now instead of waiting for the next session |
 | `/bigmind:mind review` | Audit for stale, duplicate, or vague memories |
@@ -156,6 +200,8 @@ Most sessions produce **zero or one** memory. That's correct, not a failure.
 |-----|---------|---------|
 | `mindName` | `"Mind"` | What Claude calls it in conversation. Cosmetic only — no paths change. |
 | `autoCapture` | `true` | Master switch for automatic capture |
+| `protectExisting` | `"auto"` | `"auto"` protects memories that predate BigMind; `true` protects every existing file; `false` disables protection |
+| `backupBeforeFirstWrite` | `true` | Snapshot a project's memory folder before BigMind's first write to it |
 | `minUserTurns` | `3` | Sessions shorter than this are treated as chit-chat |
 | `maxQueue` | `25` | Backlog cap; oldest entries drop past this |
 | `excludeProjects` | `[]` | Absolute paths to never capture from |

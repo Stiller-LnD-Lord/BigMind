@@ -24,6 +24,16 @@ for (let i = 0; i < argv.length; i++) {
 function coerce(key, raw) {
   const value = raw.replace(/^["']|["']$/g, '');
   const proto = DEFAULT_CONFIG[key];
+
+  // protectExisting is tri-state: 'auto' | true | false. Its default is a
+  // string, so the generic string branch below would store "false" — a
+  // truthy value that silently disables the protection it looks like it sets.
+  if (key === 'protectExisting') {
+    if (value === 'true') return true;
+    if (value === 'false') return false;
+    return 'auto';
+  }
+
   if (typeof proto === 'boolean') return value === 'true' || value === '1';
   if (typeof proto === 'number') {
     const n = Number(value);

@@ -11,10 +11,12 @@ that word when talking to the user about their memory.
 
 Subcommand requested: **$ARGUMENTS** (default to `status` if empty)
 
-- **status** — Run `node "${CLAUDE_PLUGIN_ROOT}/scripts/queue.mjs" --list`.
-  Then list the memory files for the current project and show the contents of
-  `MEMORY.md`. Report: how many memories exist, how many sessions are pending
-  distillation, and whether auto-capture is on.
+- **status** — Run both:
+  `node "${CLAUDE_PLUGIN_ROOT}/scripts/memory.mjs" --status` and
+  `node "${CLAUDE_PLUGIN_ROOT}/scripts/queue.mjs" --list`.
+  Then show `MEMORY.md`. Report: how many memories exist, **how many are
+  protected**, how many sessions are pending distillation, and whether
+  auto-capture is on.
 
 - **capture** — Distil the pending queue now rather than waiting for the next
   session start. Follow the distillation procedure in the skill for each queued

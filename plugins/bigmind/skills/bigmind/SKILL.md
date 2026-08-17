@@ -80,6 +80,11 @@ Discard:
 already covers the topic, **update it** — do not create a near-duplicate. A
 growing wiki dies from duplication faster than from omission.
 
+> **Unless the file is protected.** See "Protected memories" below. If the
+> injected context lists protected files, or `memory.mjs --status` marks a file
+> `[protected]`, that file is **read-only**: read it for context, but express
+> any new fact as a NEW file that links back with `[[name]]`.
+
 **5. Write the files.** Follow `reference/memory-format.md` exactly. One fact
 per file. `feedback` and `project` types must carry **Why** and **How to
 apply** sections — a memory that states a rule without the reasoning gets
@@ -100,6 +105,40 @@ reconsidered on every subsequent startup.
 **8. Report in one line.** For example: *"Added 2 memories from yesterday's
 session (Netlify site IDs, transcript button rule)."* Do not narrate the
 process. If nothing was worth keeping, say so in one short clause.
+
+## Protected memories
+
+Many people arrive at BigMind with a memory folder they have curated by hand
+for months. Those files are the most valuable thing in the system and the
+easiest thing to quietly ruin — not by deleting them, but by "merging" a new
+observation in and smoothing away the specific detail that made the rule
+useful. The owner would not notice for weeks.
+
+So BigMind records a **baseline**: the list of memory files that existed the
+first time it saw a project. Under the default `protectExisting: 'auto'`, those
+files are read-only to BigMind forever. Files BigMind creates itself stay
+writable, which is what keeps duplicates under control going forward.
+
+Check the state at any time:
+
+```
+node "<plugin-root>/scripts/memory.mjs" --status
+```
+
+**Rules when a file is protected:**
+
+- **Read it.** You must, or you will write duplicates.
+- **Never** edit, reword, reorder, merge into, rename, or delete it.
+- If a new fact belongs with a protected memory, write a **new** file that
+  references it: `Extends [[existing-memory-name]].`
+- In `MEMORY.md`, **append** index lines for files you create. Do not reword,
+  reorder, or remove existing lines.
+- If a protected memory is genuinely **wrong**, do not fix it silently. Say so
+  to the user and let them decide — that is what `/bigmind:mind review` is for.
+
+The user can hand a specific file over with
+`memory.mjs --release <file.md>`, or drop protection entirely with
+`config.mjs --set protectExisting=false`. Both are their call, never yours.
 
 ## Restraint is the whole game
 
