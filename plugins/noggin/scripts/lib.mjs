@@ -29,7 +29,7 @@ export const LOG_PATH = join(NOGGIN_DIR, 'noggin.log');
 /**
  * This plugin was called BigMind until v0.2.0, and kept its state in
  * ~/.claude/bigmind. Carry that folder over on first run so the config, the
- * pending queue and — most importantly — the seen.json baselines that mark
+ * pending queue and, most importantly, the seen.json baselines that mark
  * pre-existing memories as protected all survive the rename. Without this the
  * baselines look empty and previously protected files become writable.
  *
